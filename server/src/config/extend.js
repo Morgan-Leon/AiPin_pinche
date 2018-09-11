@@ -5,7 +5,7 @@ const session = require('think-session');
 
 module.exports = [
   view, // make application support view
-  model(think.app),
+  model(think.app), //让框架支持模型的功能
   cache,
   session
 ];

@@ -29,7 +29,7 @@ exports.cache = {
  */
 exports.model = {
   type: 'mysql',
-  common: {
+  common: { // 通用配置
     logConnect: isDev,
     logSql: isDev,
     logger: msg => think.logger.info(msg)
@@ -37,12 +37,12 @@ exports.model = {
   mysql: {
     handle: mysql,
     database: '',
-    prefix: 'think_',
+    prefix: 'AiPin_',
     encoding: 'utf8',
     host: '127.0.0.1',
-    port: '',
-    user: 'root',
-    password: 'root',
+    port: 3360,
+    user: 'lyn',
+    password: 'lyn',
     dateStrings: true
   }
 };
