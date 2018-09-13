@@ -1,5 +1,4 @@
 module.exports = class extends think.Model {
-
   get schema() {
     return {
       type: { // 字段名称
@@ -16,6 +15,6 @@ module.exports = class extends think.Model {
           return data.grade * 1.5;
         }
       }
-    }
+    };
   }
 };
