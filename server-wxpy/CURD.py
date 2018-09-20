@@ -15,9 +15,9 @@ def insertRoute(db,msg):
         cursor.execute(sql)
         # 执行sql语句
         db.commit()
-        print("SUCCESS")
+        print("SUCCESS\n")
         return True
     except:
-        print("ERROR")
+        print("ERROR\n")
         return False
 

@@ -13,10 +13,12 @@ def transformToSql(msg):
     sentences = s.sentences
 
     # In[3]:
-    baseSentence = formatChecker(s)
-    if( baseSentence == None or len(baseSentence) == 0):
-        print("格式错误")
-        return ""
+    index = formatChecker(s)
+    if(index < 0 ):
+      print("formatChecker格式错误 ： 无早晚时间信息") 
+      return ""
+    baseSentence = sentences[index]
+
 
     day_pattern =  re.compile(r'今晚|晚上|明早')   
     #tomorning_pattern = re.compile(r'明早')
@@ -37,27 +39,33 @@ def transformToSql(msg):
     if(len(gatherTime) == 0):
         time_pattern_2 = re.compile(r'[012]?\d[点]')
         gatherTime = time_pattern_2.findall(baseSentence)
-        gatherTime[0] = gatherTime[0] + "00" 
-    else:
-        print("格式错误")
-        return ""
+        if(len(gatherTime) != 0):
+            gatherTime[0] = gatherTime[0] + "00" 
+        else:
+            print("gatherTime格式错误：集合时间格式错误")
+            return ""
 
     origin = re.search(origin_pattern,msg)
     if(origin == None):
-        print("格式错误")
+        print("origin：出发地点格式错误")
         return ""
-    telephone = re.findall(telephone_pattern,msg)
-    route = sentences[1]
+    try:
+        telephone = re.findall(telephone_pattern,msg)[0]
+    except:
+        telephone = ""
+        pass
+
+    route = getRoute(sentences,index)
 
     try:
         destination = re.findall(destination_pattern,msg)[0][1]
     except :
         print("未找到Destination,取默认值")
         #晚上出发取廊坊，早上出发取北京
-        if("晚" in dayStr):
-            destination = "廊坊"
-        else:
+        if("早" in dayStr):
             destination = "北京"
+        else:
+            destination = "廊坊"
         pass
     
     try:
@@ -80,9 +88,9 @@ def transformToSql(msg):
     route = route
     seats = seats
     car_id = ''
-    telephone = telephone[0]
+    telephone = telephone
     message = msg
-    description = ''
+    description = getDescription(msg)
 
     # In[5]:
 
@@ -90,13 +98,4 @@ def transformToSql(msg):
     print(sql)
 
     return sql
-
-def formatChecker(s):
-    baseSentence = ""
-    for sentence in s.sentences:
-        check_pattern = re.compile(r'上午|下午|晚')
-        if (re.search(check_pattern, sentence)):
-            baseSentence = sentence
-            print("baseSentence: " + baseSentence)
-            return baseSentence
 
