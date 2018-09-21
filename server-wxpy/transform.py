@@ -23,16 +23,10 @@ def transformToSql(msg):
     day_pattern =  re.compile(r'今晚|晚上|明早')   
     #tomorning_pattern = re.compile(r'明早')
     time_pattern = re.compile(r'[012]?\d[:.：点] ?\d{1,2}')
-    origin_pattern = re.compile(r'(分钟寺|十里河)[a-zA-Z]?(口|出口)?')
+    #origin_pattern = re.compile(r'(分钟寺|十里河)[a-zA-Z]?(口|出口)?')
     telephone_pattern = re.compile(r'1[3-9][0-9]{9}')
     seats_pattern = re.compile(r'(空[一-六两])|([一-六两]位)')
 
-    if("终点" in msg):
-        destination_pattern = re.compile(r'(终点|回)(\w{3,4})')
-    else:
-        # route 要以 - 或者 ～ 连接 以中文句号。 或者空格结尾
-        destination_pattern = re.compile(r'(-|～)(\w{3,4})($|。| )')
-    
     dayStr = day_pattern.findall(baseSentence)
     #print(dayStr)
     gatherTime = time_pattern.findall(baseSentence)
@@ -45,10 +39,7 @@ def transformToSql(msg):
             print("gatherTime格式错误：集合时间格式错误")
             return ""
 
-    origin = re.search(origin_pattern,msg)
-    if(origin == None):
-        print("origin：出发地点格式错误")
-        return ""
+
     try:
         telephone = re.findall(telephone_pattern,msg)[0]
     except:
@@ -56,13 +47,29 @@ def transformToSql(msg):
         pass
 
     route = getRoute(sentences,index)
+    #origin = getOrigin(dayStr[0],route,msg,baseSentence)
+    #origin = re.search(origin_pattern,msg)
+  
+    try:
+        origin = getOrigin(dayStr[0],route,msg,baseSentence)
+    except:
+        print("getOrigin：出发格式出错")
+        return ""
+
+
+    if("终点" in msg or "回" in msg):
+        #取“终点” 或者 回 后面 三个或四个 中文字符
+        destination_pattern = re.compile(r'(终点|回)(\w{3,4})')
+    else:
+        # route 要以 - 或者 ～ 连接 以中文句号。 或者空格结尾
+        destination_pattern = re.compile(r'(-|～|~|——|一|－)(\w{3,4})($|。| )')
 
     try:
         destination = re.findall(destination_pattern,msg)[0][1]
     except :
         print("未找到Destination,取默认值")
         #晚上出发取廊坊，早上出发取北京
-        if("早" in dayStr):
+        if("早" in dayStr[0]):
             destination = "北京"
         else:
             destination = "廊坊"
@@ -83,7 +90,7 @@ def transformToSql(msg):
     departure_time = timeGenerator(dayStr[0],gatherTime[0])
     departure_time_info = dayStr[0] + gatherTime[0]
     direction = 1
-    origin = origin.group()
+    origin = origin
     destination = destination
     route = route
     seats = seats
@@ -98,4 +105,3 @@ def transformToSql(msg):
     print(sql)
 
     return sql
-

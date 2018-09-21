@@ -10,7 +10,7 @@ from datetime import datetime
 def formatChecker(s):
     index= 0
     for sentence in s.sentences:
-        check_pattern = re.compile(r'上午|下午|晚')
+        check_pattern = re.compile(r'上午|下午|晚|明早')
         if (re.search(check_pattern, sentence)):
             print("baseSentence: " + sentence)
             return index
@@ -75,3 +75,25 @@ def getDescription(msg):
         description = description + i + " "
     return description
 
+
+#得到
+def getOrigin(dayStr, route, msg, baseSentence):
+    if("早" in dayStr):
+        if("出发" in baseSentence):
+            origin_pattern = re.compile(r'\w{3,4}出发')
+            origin = origin_pattern.search(msg)
+            return origin.group()
+        elif(len(route) > 0):
+            origin_pattern = re.compile(r'(\w{0,5})[-－～~——一]')
+            origin = origin_pattern.findall(route)[0]
+            if("出发" in origin):
+                return origin
+            else:
+                return origin + "出发"
+        else:
+            return "廊坊出发"
+
+    else:
+        origin_pattern = re.compile(r'(分钟寺|十里河)[a-zA-Z]?(口|出口)?')
+        origin = re.search(origin_pattern,msg)
+        return origin.group()
