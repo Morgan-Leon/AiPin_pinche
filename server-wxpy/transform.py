@@ -8,17 +8,18 @@ from snownlp import SnowNLP
 
 
 def transformToSql(msg):
+    print("transformToSql")
     sql = ""
-    s = SnowNLP(msg)
-    sentences = s.sentences
-
+    #s = SnowNLP(msg)
+    #sentences = s.sentences
+    sentences = msg
     # In[3]:
-    index = formatChecker(s)
+    index = formatChecker(msg)
     if(index < 0 ):
       print("formatChecker格式错误 ： 无早晚时间信息") 
       return ""
-    baseSentence = sentences[index]
-
+    #baseSentence = sentences[index]
+    baseSentence = msg
 
     day_pattern =  re.compile(r'今晚|晚上|明早')   
     #tomorning_pattern = re.compile(r'明早')

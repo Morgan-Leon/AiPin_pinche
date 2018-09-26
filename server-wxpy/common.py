@@ -7,14 +7,24 @@ from datetime import datetime
 # In[2]:
 #验证语句合法性
 #必须包含时间信息：上午|下午|晚
-def formatChecker(s):
-    index= 0
-    for sentence in s.sentences:
-        check_pattern = re.compile(r'上午|下午|晚|明早')
-        if (re.search(check_pattern, sentence)):
-            print("baseSentence: " + sentence)
-            return index
-        index = index + 1
+# def formatChecker(s):
+#     print("formatChecker")
+#     index= 0
+#     for sentence in s.sentences:
+#         check_pattern = re.compile(r'上午|下午|晚|明早')
+#         if (re.search(check_pattern, sentence)):
+#             print("baseSentence: " + sentence)
+#             return index
+#         index = index + 1
+#     return -1
+
+def formatChecker(msg):
+    print("formatChecker")
+    index = 0
+    check_pattern = re.compile(r'上午|下午|晚|明早')
+    if (re.search(check_pattern, msg)):
+        print("baseSentence: " + msg)
+        return index
     return -1
 
 #将字符串格式的时间 转化为时间格式
@@ -22,6 +32,7 @@ def formatChecker(s):
 #timeStr : 7:10 等
 #例：今晚7.10  =>  2018-09-20 19:10:00
 def timeGenerator(dayStr,timeStr) :
+    print("timeGenerator")
     now = time.localtime(time.time())
     departure_time = now
     if ("明" in dayStr):
@@ -56,6 +67,7 @@ print(test)
 
 #以-－～~——一符号连接，连续两个以上的
 def getRoute(sentences,index):
+    print("getRoute")
     route_pattern = re.compile(r'\w{0,5}([-－～~——一]\w{2,8}){2,10}')
     while(index < len(sentences)):
         route = route_pattern.search(sentences[index])
@@ -68,6 +80,7 @@ def getRoute(sentences,index):
 
 #写入小括号中的内容将解析在description 字段
 def getDescription(msg):
+    print("getDescription")
     description = ""
     description_pattern = re.compile(r'[\(（](.*?)[\)）]')
     resultArray = re.findall(description_pattern,msg)
@@ -78,6 +91,7 @@ def getDescription(msg):
 
 #得到
 def getOrigin(dayStr, route, msg, baseSentence):
+    print("getOrigin")
     if("早" in dayStr):
         if("出发" in baseSentence):
             origin_pattern = re.compile(r'\w{3,4}出发')

@@ -5,9 +5,9 @@ from transform import *
 import pymysql
 
 def insertRoute(db,msg):
-
+    print("insertRoute1")
     sql = transformToSql(msg)
-
+    print("insertRoute2")
     # In[8]:
     try:
         # 执行sql语句
